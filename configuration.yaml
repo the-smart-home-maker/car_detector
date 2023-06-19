@@ -1,0 +1,8 @@
+# add this to your configuration.yaml in Home Assistant
+sensor:
+ - platform: ultrasonic
+   trigger_pin: GPIO27
+   echo_pin: GPIO14
+   name: "Distance car"
+   update_interval: 5s
+   timeout: 4.0m
