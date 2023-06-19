@@ -11,3 +11,43 @@ binary_sensor:
  - name: "Car detected"
    state: >
       {{ not(is_state('sensor.ultrasonic_control_garage_door_distance_car', 'unknown')) }}
+
+cover:
+  - platform: template
+    covers:
+      garage_door:
+        device_class: garage
+        unique_id: garage_door_safe
+        friendly_name: "Garage door safe"
+        value_template: >
+          {{ states('cover.my_actual_garage_door') }}
+        open_cover:
+         — if:
+           - condition: state
+             entity_id: binary_sensor.car_detected
+             state: "off"
+           then:
+             - service: cover.open_cover
+               data: {}
+               target:
+                 entity_id: cover.my_actual_garage_door 
+           else:
+             - service: notify.all_devices
+               data:
+               message: >-
+                 Garage can not be opened: blocked by car 
+        close_cover:
+          — if:
+             - condition: state
+               entity_id: binary_sensor.car_detected
+               state: "off"
+            then:
+              - service: cover.open_cover
+                data: {}
+                target:
+                  entity_id: cover.my_actual_garage_door 
+            else:
+             - service: notify.all_devices
+               data:
+               message: >-
+                 Garage can not be closed: blocked by car 
