@@ -6,3 +6,8 @@ sensor:
    name: "Distance car"
    update_interval: 5s
    timeout: 4.0m
+
+binary_sensor:
+ - name: "Car detected"
+   state: >
+      {{ not(is_state('sensor.ultrasonic_control_garage_door_distance_car', 'unknown')) }}
